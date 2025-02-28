@@ -9,9 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@hookform/resolvers": "^3.9.1",
+    "@mui/icons-material": "^6.4.6",
+    "@mui/material": "^6.1.5",
+    "@mui/system": "^6.1.5",
+    "axios": "^1.7.7",
+    "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
-    "next": "15.0.2"
+    "react-hook-form": "^7.53.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "eslint": "^8",
