@@ -32,7 +32,7 @@ export default function Step01Phone() {
       />
 
       <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
-        By clicking on ‘Continue’ I agree to Foundit's{' '}
+        By clicking on ‘Continue’ I agree to Foundit&apos;s{' '}
         <Link href="#" underline="hover">
           Terms and Conditions
         </Link>

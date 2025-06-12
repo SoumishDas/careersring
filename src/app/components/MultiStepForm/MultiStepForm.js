@@ -89,9 +89,40 @@ export default function MultiStepForm({ candidateId }) {
     }
   });
   const { handleSubmit, reset } = methods;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Current step index
   const [currentStep, setCurrentStep] = useState(0);
+
+  const mapFormToMasterCandidate = (data) => {
+    return {
+      FullName: data.name,
+      Email: data.email || undefined,
+      MobileNumber: data.phone || undefined,
+      Gender: data.gender || undefined,
+      CurrentLocation: data.currentLocation || undefined,
+      AutoUpdateLinkedIn: data.autoUpdateLinkedIn,
+      EducationType: data.educationType || undefined,
+      ProfessionalExperience: {
+        StartDate:
+          data.joinYear && data.joinMonth
+            ? `${data.joinYear}-${data.joinMonth}-01`
+            : undefined,
+        CurrentlyWorkingHere: data.currentlyWorking,
+        CurrentSalary: data.annualSalary
+          ? parseInt(data.annualSalary, 10)
+          : undefined,
+        NoticePeriod: data.noticePeriod || undefined
+      },
+      Skills: (data.skills || []).map((s) => ({ Name: s })),
+      JobTitles: (data.jobTitles || []).map((t) => ({ Title: t })),
+      PreferredLocations: (data.preferredCities || []).map((c) => ({ Name: c })),
+      Industries: (data.industries || []).map((i) => ({ Name: i })),
+      Degree: data.highestQualification || undefined,
+      UniversityBoardName: data.university || undefined,
+      LinkedInProfileURL: data.linkedinUrl || undefined
+    };
+  };
 
   // If candidateId is present, fetch old parser data from the bridge endpoint
   useEffect(() => {
@@ -118,20 +149,30 @@ export default function MultiStepForm({ candidateId }) {
   const onSubmit = (formData) => {
     // If it's the last step, finalize
     if (currentStep === steps.length - 1) {
-      console.log('Final form data:', formData);
-
-      // Example: POST or PUT to /masterData/candidates
-      // fetch('/masterData/candidates', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData)
-      // })
-      //   .then((res) => res.json())
-      //   .then((createdRecord) => {
-      //     console.log('Created record:', createdRecord);
-      //   });
-
-      alert('Form submitted! Check console for data.');
+      setIsSubmitting(true);
+      const payload = mapFormToMasterCandidate(formData);
+      fetch('http://43.205.211.80:5000/masterData/candidates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error('Failed to submit form');
+          }
+          return res.json();
+        })
+        .then((createdRecord) => {
+          console.log('Created record:', createdRecord);
+          alert('Form submitted successfully');
+        })
+        .catch((err) => {
+          console.error('Submission error:', err);
+          alert('Error submitting form');
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
     } else {
       // Otherwise, move to next step
       setCurrentStep(currentStep + 1);
@@ -197,7 +238,7 @@ export default function MultiStepForm({ candidateId }) {
           >
             {/* Example: show "Skip" from step 2 onward, up to second-last step */}
             {currentStep >= 2 && currentStep < steps.length - 1 && (
-              <Button variant="text" onClick={handleSkip}>
+              <Button variant="text" onClick={handleSkip} disabled={isSubmitting}>
                 Skip
               </Button>
             )}
@@ -205,7 +246,7 @@ export default function MultiStepForm({ candidateId }) {
 
             {/* Back button (hide on first step) */}
             {currentStep > 0 && (
-              <Button onClick={handleBack} variant="outlined" sx={{ mr: 2 }}>
+              <Button onClick={handleBack} variant="outlined" sx={{ mr: 2 }} disabled={isSubmitting}>
                 Back
               </Button>
             )}
@@ -215,6 +256,7 @@ export default function MultiStepForm({ candidateId }) {
               type="submit"
               variant="contained"
               endIcon={<ArrowForwardIosIcon />}
+              disabled={isSubmitting}
             >
               {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
             </Button>
