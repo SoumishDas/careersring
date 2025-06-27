@@ -18,7 +18,12 @@ const mockSkills = [
 ];
 
 export default function Step08Skills() {
-  const { watch, setValue } = useFormContext();
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+    register,
+  } = useFormContext();
   const selectedSkills = watch('skills') || [];
   const [allSkills, setAllSkills] = useState([]);
 
@@ -27,6 +32,14 @@ export default function Step08Skills() {
       setAllSkills(mockSkills);
     }, 300);
   }, []);
+
+  // register field for validation
+  useEffect(() => {
+    register('skills', {
+      validate: (val) =>
+        (val && val.length > 0) || 'At least one skill is required',
+    });
+  }, [register]);
 
   return (
     <Box>
@@ -45,7 +58,12 @@ export default function Step08Skills() {
           setValue('skills', newVal);
         }}
         renderInput={(params) => (
-          <TextField {...params} label="Enter your skills" />
+          <TextField
+            {...params}
+            label="Enter your skills"
+            error={!!errors.skills}
+            helperText={errors.skills?.message}
+          />
         )}
         sx={{ mt: 2 }}
       />

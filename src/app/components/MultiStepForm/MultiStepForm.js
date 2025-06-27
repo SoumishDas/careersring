@@ -61,6 +61,7 @@ const steps = [
 export default function MultiStepForm({ candidateId }) {
   // React Hook Form with some default values
   const methods = useForm({
+    mode: "onBlur",
     defaultValues: {
       phone: "",
       email: "",
