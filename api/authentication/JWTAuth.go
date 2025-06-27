@@ -9,15 +9,15 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-//jwt service
+// jwt service
 type JWTService interface {
-	GenerateToken(email string, isUser bool,userId uint64) Tokens
+	GenerateToken(email string, isUser bool, userId uint64) Tokens
 	ValidateToken(token string) (*jwt.Token, error)
 }
-type    authCustomClaims struct {
+type authCustomClaims struct {
 	Name string `json:"name"`
 	User bool   `json:"user"`
-	
+
 	jwt.StandardClaims
 }
 
@@ -26,11 +26,11 @@ type jwtServices struct {
 	issure    string
 }
 type Tokens struct {
-	AccessToken string
-	RefreshToken    string
+	AccessToken  string
+	RefreshToken string
 }
 
-//auth-jwt
+// auth-jwt
 func JWTAuthService() JWTService {
 	return &jwtServices{
 		secretKey: getSecretKey(),
@@ -46,16 +46,16 @@ func getSecretKey() string {
 	return secret
 }
 
-func (service *jwtServices) GenerateToken(email string, isUser bool,userId uint64) Tokens {
+func (service *jwtServices) GenerateToken(email string, isUser bool, userId uint64) Tokens {
 	claims := &authCustomClaims{
 		email,
 		isUser,
-		
+
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
 			Issuer:    service.issure,
 			IssuedAt:  time.Now().Unix(),
-			Subject: strconv.Itoa(int(userId)),
+			Subject:   strconv.Itoa(int(userId)),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -65,12 +65,12 @@ func (service *jwtServices) GenerateToken(email string, isUser bool,userId uint6
 	if err != nil {
 		println(err)
 	}
-	
+
 	rtClaims := &jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(time.Hour * 120).Unix(),
 		Issuer:    service.issure,
 		IssuedAt:  time.Now().Unix(),
-		Subject: strconv.Itoa(int(userId)),
+		Subject:   strconv.Itoa(int(userId)),
 	}
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
 
@@ -79,15 +79,13 @@ func (service *jwtServices) GenerateToken(email string, isUser bool,userId uint6
 		println(err)
 	}
 
-
-
-	return Tokens{AccessToken: t,RefreshToken: rt}
+	return Tokens{AccessToken: t, RefreshToken: rt}
 }
 
 func (service *jwtServices) ValidateToken(encodedToken string) (*jwt.Token, error) {
 	return jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
 		if _, isvalid := token.Method.(*jwt.SigningMethodHMAC); !isvalid {
-			return nil, fmt.Errorf("Invalid token", token.Header["alg"])
+			return nil, fmt.Errorf("Invalid token %v", token.Header["alg"])
 
 		}
 		return []byte(service.secretKey), nil

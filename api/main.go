@@ -25,7 +25,7 @@ func main() {
 	dbType := os.Getenv("DB_TYPE")
 	db.ConnectDB(dbType)
 	Router = router.GetRouter()
-	models.MigrateDB(&db.DB)
+	models.MigrateDB(db.DB)
 
 	log.Fatal(Router.Run(":5000"))
 
