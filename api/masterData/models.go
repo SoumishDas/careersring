@@ -1,9 +1,12 @@
 package masterData
 
 import (
+	"fmt"
 	"go-gin-api/db"
 	"go-gin-api/models"
 	"strconv"
+
+	"github.com/google/uuid"
 )
 
 // CreateMasterCandidate inserts a new MasterCandidate into DB
@@ -331,4 +334,36 @@ func GetAllMasterIndustries() []models.MasterIndustry {
 	var industries []models.MasterIndustry
 	db.DB.Find(&industries)
 	return industries
+}
+
+// --- Invitation Helpers ---
+
+// CreateInvitationTokens creates an invitation token for every candidate without one
+func CreateInvitationTokens() {
+	var candidates []models.MasterCandidate
+	db.DB.Find(&candidates)
+	for _, c := range candidates {
+		if c.Email == nil || *c.Email == "" {
+			continue
+		}
+		var token models.InvitationToken
+		res := db.DB.Where("master_candidate_id = ?", c.ID).First(&token)
+		if res.RecordNotFound() {
+			newToken := models.InvitationToken{
+				MasterCandidateID: c.ID,
+				Token:             uuid.New().String(),
+				Completed:         false,
+			}
+			db.DB.Create(&newToken)
+			// Placeholder for sending email
+			fmt.Printf("Sending invitation to %s with token %s\n", *c.Email, newToken.Token)
+		}
+	}
+}
+
+// ListInvitationTokens returns all tokens
+func ListInvitationTokens() []models.InvitationToken {
+	var tokens []models.InvitationToken
+	db.DB.Find(&tokens)
+	return tokens
 }

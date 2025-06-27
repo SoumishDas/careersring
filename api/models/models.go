@@ -26,5 +26,6 @@ func MigrateDB(db *gorm.DB) {
 		&MasterJobTitle{},
 		&MasterLocation{},
 		&MasterIndustry{},
+		&InvitationToken{},
 	)
 }

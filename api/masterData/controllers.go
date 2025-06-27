@@ -156,3 +156,16 @@ func (ctrl *MasterDataController) GetAllIndustries(c *gin.Context) {
 	industries := GetAllMasterIndustries()
 	c.JSON(http.StatusOK, industries)
 }
+
+// SendInvitations handles POST /masterData/invitations/send
+func (ctrl *MasterDataController) SendInvitations(c *gin.Context) {
+	CreateInvitationTokens()
+	tokens := ListInvitationTokens()
+	c.JSON(http.StatusOK, tokens)
+}
+
+// ListInvitations handles GET /masterData/invitations
+func (ctrl *MasterDataController) ListInvitations(c *gin.Context) {
+	tokens := ListInvitationTokens()
+	c.JSON(http.StatusOK, tokens)
+}
