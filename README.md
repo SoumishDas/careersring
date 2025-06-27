@@ -54,6 +54,9 @@ Execute all tests with:
 npm test
 ```
 
+Go commands use the `go.work` workspace at the repository root. Run Go tooling from the `api` directory or reference `./api/...` in the package path.
+
+
 ## Deployment
 
 To build the frontend and API for production use Postgres, run:
