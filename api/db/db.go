@@ -17,6 +17,7 @@ func ConnectDB(dbType string) {
 	if dbType == "" {
 		env := os.Getenv("ENV")
 		if env == "Production" || env == "Deployment" {
+
 			dbType = "postgres"
 		} else {
 			dbType = "sqlite3"
