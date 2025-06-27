@@ -18,7 +18,8 @@ var (
 
 func main() {
 	runtime.GOMAXPROCS(2)
-	if os.Getenv("ENV") == "Production" {
+	env := os.Getenv("ENV")
+	if env == "Production" || env == "Deployment" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 

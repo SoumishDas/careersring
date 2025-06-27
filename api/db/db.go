@@ -15,7 +15,8 @@ var DB *gorm.DB
 // Connecting to db
 func ConnectDB(dbType string) {
 	if dbType == "" {
-		if os.Getenv("ENV") == "Production" {
+		env := os.Getenv("ENV")
+		if env == "Production" || env == "Deployment" {
 			dbType = "postgres"
 		} else {
 			dbType = "sqlite3"
@@ -26,7 +27,8 @@ func ConnectDB(dbType string) {
 		dsn := os.Getenv("POSTGRES_DSN")
 		if dsn == "" {
 			dbName := "Test"
-			if os.Getenv("ENV") == "Production" {
+			env := os.Getenv("ENV")
+			if env == "Production" || env == "Deployment" {
 				dbName = "Prod"
 			}
 			dsn = fmt.Sprintf("user=postgres host=43.205.211.80 dbname=%s sslmode=disable password=chikoo123", dbName)
