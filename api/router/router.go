@@ -82,5 +82,8 @@ func GetRouter() *gin.Engine {
 	api.GET("/masterData/locations", masterDataCtrl.GetAllLocations)
 	api.GET("/masterData/industries", masterDataCtrl.GetAllIndustries)
 
+	api.POST("/masterData/invitations/send", masterDataCtrl.SendInvitations)
+	api.GET("/masterData/invitations", masterDataCtrl.ListInvitations)
+
 	return Router
 }

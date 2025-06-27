@@ -128,3 +128,11 @@ type MasterIndustry struct {
 	gorm.Model
 	Name string `gorm:"uniqueIndex;not null"`
 }
+
+// InvitationToken stores a unique token sent to a candidate for completing the form
+type InvitationToken struct {
+	gorm.Model
+	MasterCandidateID uint
+	Token             string `gorm:"uniqueIndex;not null"`
+	Completed         bool
+}
