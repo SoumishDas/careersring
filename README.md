@@ -82,3 +82,19 @@ sudo systemctl start careersring.service
 
 The service file will be created at `/etc/systemd/system/careersring.service` and
 uses `DB_TYPE=postgres` so the API connects to your Postgres database.
+
+## Camunda Setup
+
+This repository does not bundle Camunda. To use Camunda for workflow
+automation:
+
+1. Download the Camunda distribution from
+   [camunda.com](https://camunda.com/download/).
+2. Extract the archive and run the provided startup script (e.g. `./start.sh` or
+   `./camunda.sh` depending on the distribution).
+3. Once Camunda is running, you can model workflows using the Camunda Modeler
+   and interact with them via the REST API on port `8080`.
+
+Integrating the Go API with Camunda typically involves calling the REST API
+from your handlers. Configure the Camunda base URL via environment variables or
+configuration as needed.

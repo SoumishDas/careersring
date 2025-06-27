@@ -3,6 +3,7 @@ package routes
 import (
 	"go-gin-api/authentication"
 	"go-gin-api/candidate"
+	"go-gin-api/client"
 	"go-gin-api/hcm"
 	"go-gin-api/masterData"
 
@@ -84,6 +85,19 @@ func GetRouter() *gin.Engine {
 
 	api.POST("/masterData/invitations/send", masterDataCtrl.SendInvitations)
 	api.GET("/masterData/invitations", masterDataCtrl.ListInvitations)
+
+	clientCtrl := client.NewController()
+	api.POST("/clients", clientCtrl.CreateClient)
+	api.GET("/clients", clientCtrl.ListClients)
+	api.GET("/clients/:id", clientCtrl.GetClient)
+	api.PUT("/clients/:id", clientCtrl.UpdateClient)
+	api.DELETE("/clients/:id", clientCtrl.DeleteClient)
+
+	api.POST("/pocs", clientCtrl.CreatePOC)
+	api.GET("/pocs", clientCtrl.ListPOCs)
+	api.GET("/pocs/:id", clientCtrl.GetPOC)
+	api.PUT("/pocs/:id", clientCtrl.UpdatePOC)
+	api.DELETE("/pocs/:id", clientCtrl.DeletePOC)
 
 	return Router
 }
