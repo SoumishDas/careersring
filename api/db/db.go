@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -13,20 +14,30 @@ var DB gorm.DB
 
 // Connecting to db
 func ConnectDB(dbType string) {
-	//var err error
+	if dbType == "" {
+		dbType = "sqlite3"
+	}
+
 	if dbType == "postgres" {
-		// db, err := gorm.Open("postgres", "user=postgres dbname=test sslmode=disable password=123456")
-		dbName := "Test"
-		if os.Getenv("ENV") == "Production" {
-			dbName = "Prod"
+		dsn := os.Getenv("POSTGRES_DSN")
+		if dsn == "" {
+			dbName := "Test"
+			if os.Getenv("ENV") == "Production" {
+				dbName = "Prod"
+			}
+			dsn = fmt.Sprintf("user=postgres host=43.205.211.80 dbname=%s sslmode=disable password=chikoo123", dbName)
 		}
-		db, err := gorm.Open("postgres", "user=postgres host=43.205.211.80 dbname="+dbName+" sslmode=disable password=chikoo123")
+		db, err := gorm.Open("postgres", dsn)
 		if err != nil {
 			log.Fatal("Error Connecting to db")
 		}
 		DB = *db
 	} else if dbType == "sqlite3" {
-		db, err := gorm.Open("sqlite3", "./test.db")
+		path := os.Getenv("SQLITE_PATH")
+		if path == "" {
+			path = "./test.db"
+		}
+		db, err := gorm.Open("sqlite3", path)
 		if err != nil {
 			log.Fatal("Error Connecting to db")
 		}

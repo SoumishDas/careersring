@@ -1,9 +1,12 @@
 package masterData
 
 import (
+	"fmt"
 	"go-gin-api/db"
 	"go-gin-api/models"
 	"strconv"
+
+	"github.com/google/uuid"
 )
 
 // CreateMasterCandidate inserts a new MasterCandidate into DB
@@ -13,25 +16,66 @@ func CreateMasterCandidate(mc models.MasterCandidate) models.MasterCandidate {
 }
 
 // FindAllMasterCandidates returns a paginated list
-func FindAllMasterCandidates(offset, pageSize int) []models.MasterCandidate {
-	var candidates []models.MasterCandidate
-	db.DB.Preload("ProfessionalExperience").
-		Preload("PreviousJobs").
-		Preload("Skills").
-		Preload("Languages").
-		Preload("Certifications").
-		Preload("AwardAchievements").
-		Preload("JobTitles").
-		Preload("PreferredLocations").
-		Limit(pageSize).Offset(offset).Find(&candidates)
-	return candidates
+func FindAllMasterCandidates(offset, pageSize int, search, invited, completed string) []models.MasterCandidate {
+        var candidates []models.MasterCandidate
+
+        query := db.DB.Preload("ProfessionalExperience").
+                Preload("PreviousJobs").
+                Preload("Skills").
+                Preload("Languages").
+                Preload("Certifications").
+                Preload("AwardAchievements").
+                Preload("JobTitles").
+                Preload("PreferredLocations").
+                Limit(pageSize).Offset(offset)
+
+        if search != "" {
+                like := fmt.Sprintf("%%%s%%", search)
+                query = query.Where("full_name LIKE ? OR email LIKE ? OR mobile_number LIKE ?", like, like, like)
+        }
+
+        if invited != "" || completed != "" {
+                query = query.Joins("LEFT JOIN invitation_tokens ON invitation_tokens.master_candidate_id = master_candidates.id")
+                if invited == "true" {
+                        query = query.Where("invitation_tokens.id IS NOT NULL")
+                } else if invited == "false" {
+                        query = query.Where("invitation_tokens.id IS NULL")
+                }
+
+                if completed == "true" {
+                        query = query.Where("invitation_tokens.completed = ?", true)
+                } else if completed == "false" {
+                        query = query.Where("invitation_tokens.completed = ?", false)
+                }
+        }
+
+        query.Find(&candidates)
+        return candidates
 }
 
 // CountMasterCandidates returns total number of MasterCandidate records
-func CountMasterCandidates() int {
-	var count int
-	db.DB.Model(&models.MasterCandidate{}).Count(&count)
-	return count
+func CountMasterCandidates(search, invited, completed string) int {
+        var count int
+        query := db.DB.Model(&models.MasterCandidate{})
+        if search != "" {
+                like := fmt.Sprintf("%%%s%%", search)
+                query = query.Where("full_name LIKE ? OR email LIKE ? OR mobile_number LIKE ?", like, like, like)
+        }
+        if invited != "" || completed != "" {
+                query = query.Joins("LEFT JOIN invitation_tokens ON invitation_tokens.master_candidate_id = master_candidates.id")
+                if invited == "true" {
+                        query = query.Where("invitation_tokens.id IS NOT NULL")
+                } else if invited == "false" {
+                        query = query.Where("invitation_tokens.id IS NULL")
+                }
+                if completed == "true" {
+                        query = query.Where("invitation_tokens.completed = ?", true)
+                } else if completed == "false" {
+                        query = query.Where("invitation_tokens.completed = ?", false)
+                }
+        }
+        query.Count(&count)
+        return count
 }
 
 // FindMasterCandidateByID fetches a MasterCandidate by ID
@@ -331,4 +375,36 @@ func GetAllMasterIndustries() []models.MasterIndustry {
 	var industries []models.MasterIndustry
 	db.DB.Find(&industries)
 	return industries
+}
+
+// --- Invitation Helpers ---
+
+// CreateInvitationTokens creates an invitation token for every candidate without one
+func CreateInvitationTokens() {
+	var candidates []models.MasterCandidate
+	db.DB.Find(&candidates)
+	for _, c := range candidates {
+		if c.Email == nil || *c.Email == "" {
+			continue
+		}
+		var token models.InvitationToken
+		res := db.DB.Where("master_candidate_id = ?", c.ID).First(&token)
+		if res.RecordNotFound() {
+			newToken := models.InvitationToken{
+				MasterCandidateID: c.ID,
+				Token:             uuid.New().String(),
+				Completed:         false,
+			}
+			db.DB.Create(&newToken)
+			// Placeholder for sending email
+			fmt.Printf("Sending invitation to %s with token %s\n", *c.Email, newToken.Token)
+		}
+	}
+}
+
+// ListInvitationTokens returns all tokens
+func ListInvitationTokens() []models.InvitationToken {
+	var tokens []models.InvitationToken
+	db.DB.Find(&tokens)
+	return tokens
 }
