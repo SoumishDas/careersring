@@ -23,7 +23,7 @@ type authCustomClaims struct {
 
 type jwtServices struct {
 	secretKey string
-	issure    string
+	issuer    string
 }
 type Tokens struct {
 	AccessToken  string
@@ -34,7 +34,7 @@ type Tokens struct {
 func JWTAuthService() JWTService {
 	return &jwtServices{
 		secretKey: getSecretKey(),
-		issure:    "CareersRing",
+		issuer:    "CareersRing",
 	}
 }
 
@@ -53,7 +53,7 @@ func (service *jwtServices) GenerateToken(email string, isUser bool, userId uint
 
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
-			Issuer:    service.issure,
+			Issuer:    service.issuer,
 			IssuedAt:  time.Now().Unix(),
 			Subject:   strconv.Itoa(int(userId)),
 		},
@@ -68,7 +68,7 @@ func (service *jwtServices) GenerateToken(email string, isUser bool, userId uint
 
 	rtClaims := &jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(time.Hour * 120).Unix(),
-		Issuer:    service.issure,
+		Issuer:    service.issuer,
 		IssuedAt:  time.Now().Unix(),
 		Subject:   strconv.Itoa(int(userId)),
 	}

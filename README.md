@@ -53,3 +53,29 @@ Execute all tests with:
 ```bash
 npm test
 ```
+
+## Deployment
+
+To build the frontend and API for production use Postgres, run:
+
+```bash
+./scripts/deploy.sh
+```
+
+Start the application after building with:
+
+```bash
+./scripts/run.sh
+```
+
+### Installing as a service
+
+To register the app as a systemd service run:
+
+```bash
+sudo ./scripts/register_service.sh
+sudo systemctl start careersring.service
+```
+
+The service file will be created at `/etc/systemd/system/careersring.service` and
+uses `DB_TYPE=postgres` so the API connects to your Postgres database.
