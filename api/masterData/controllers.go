@@ -31,20 +31,27 @@ func (ctrl *MasterDataController) CreateMasterCandidate(c *gin.Context) {
 
 // FindAllMasterCandidates handles GET /masterData/candidates
 func (ctrl *MasterDataController) FindAllMasterCandidates(c *gin.Context) {
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
-	offset := (page - 1) * pageSize
+        page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+        pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+        offset := (page - 1) * pageSize
 
-	candidates := FindAllMasterCandidates(offset, pageSize)
-	c.JSON(http.StatusOK, candidates)
+        search := c.DefaultQuery("search", "")
+        invited := c.DefaultQuery("invited", "")
+        completed := c.DefaultQuery("completed", "")
+
+        candidates := FindAllMasterCandidates(offset, pageSize, search, invited, completed)
+        c.JSON(http.StatusOK, candidates)
 }
 
 // GetNumberOfPages handles GET /masterData/candidates/numberOfPages
 func (ctrl *MasterDataController) GetNumberOfPages(c *gin.Context) {
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
-	total := CountMasterCandidates()
-	numPages := int(math.Ceil(float64(total) / float64(pageSize)))
-	c.JSON(http.StatusOK, gin.H{"numberOfPages": numPages})
+        pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+        search := c.DefaultQuery("search", "")
+        invited := c.DefaultQuery("invited", "")
+        completed := c.DefaultQuery("completed", "")
+        total := CountMasterCandidates(search, invited, completed)
+        numPages := int(math.Ceil(float64(total) / float64(pageSize)))
+        c.JSON(http.StatusOK, gin.H{"numberOfPages": numPages})
 }
 
 // FindMasterCandidateByID handles GET /masterData/candidates/:id

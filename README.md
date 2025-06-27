@@ -45,6 +45,16 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+## Deployment
+
+For a simple self-hosted deployment run:
+
+```bash
+bash scripts/deploy.sh
+```
+
+This script clones the repository if needed, builds the Go API on port 8080 and the Next.js app, then starts both servers with Next.js proxying API requests through `/api/*`.
+
 ## Running Tests
 
 This project uses Jest with React Testing Library.

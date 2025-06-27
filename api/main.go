@@ -27,6 +27,6 @@ func main() {
 	Router = router.GetRouter()
 	models.MigrateDB(db.DB)
 
-	log.Fatal(Router.Run(":5000"))
+	log.Fatal(Router.Run(":8080"))
 
 }

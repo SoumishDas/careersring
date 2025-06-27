@@ -1,10 +1,20 @@
 // components/MultiStepForm/Steps/Step01Phone.js
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Box, Typography, TextField, FormControlLabel, Switch, Link } from '@mui/material';
+import {
+  Box,
+  Typography,
+  TextField,
+  FormControlLabel,
+  Switch,
+  Link,
+} from '@mui/material';
 
 export default function Step01Phone() {
-  const { register } = useFormContext();
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <Box sx={{ textAlign: 'center' }}>
@@ -21,7 +31,15 @@ export default function Step01Phone() {
         <TextField
           label="Enter your mobile number"
           sx={{ width: '80%' }}
-          {...register('phone')}
+          error={!!errors.phone}
+          helperText={errors.phone?.message}
+          {...register('phone', {
+            required: 'Phone is required',
+            pattern: {
+              value: /^\d{10}$/, // simple validation
+              message: 'Enter a valid 10 digit phone number',
+            },
+          })}
         />
       </Box>
 

@@ -4,7 +4,10 @@ import { useFormContext } from 'react-hook-form';
 import { Box, Typography, TextField } from '@mui/material';
 
 export default function Step03Name() {
-  const { register } = useFormContext();
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <Box sx={{ textAlign: 'left' }}>
@@ -14,7 +17,9 @@ export default function Step03Name() {
       <TextField
         label="Enter your full name"
         fullWidth
-        {...register('name')}
+        error={!!errors.name}
+        helperText={errors.name?.message}
+        {...register('name', { required: 'Name is required' })}
       />
     </Box>
   );
