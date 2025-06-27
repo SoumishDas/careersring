@@ -53,3 +53,32 @@ Execute all tests with:
 ```bash
 npm test
 ```
+
+Go commands use the `go.work` workspace at the repository root. Run Go tooling from the `api` directory or reference `./api/...` in the package path.
+
+
+## Deployment
+
+To build the frontend and API for production use Postgres, run:
+
+```bash
+./scripts/deploy.sh
+```
+
+Start the application after building with:
+
+```bash
+./scripts/run.sh
+```
+
+### Installing as a service
+
+To register the app as a systemd service run:
+
+```bash
+sudo ./scripts/register_service.sh
+sudo systemctl start careersring.service
+```
+
+The service file will be created at `/etc/systemd/system/careersring.service` and
+uses `DB_TYPE=postgres` so the API connects to your Postgres database.
