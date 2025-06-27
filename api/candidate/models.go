@@ -28,17 +28,26 @@ func CreateCandidate(candidate models.Candidate) models.Candidate {
 }
 
 // CountCandidates returns the number of candidates in the database
-func CountCandidates() int {
+func CountCandidates(search string) int {
 	var count int
-	db.DB.Model(&models.Candidate{}).Count(&count)
+	q := db.DB.Model(&models.Candidate{})
+	if search != "" {
+		like := "%" + search + "%"
+		q = q.Where("full_name LIKE ? OR email LIKE ? OR mobile_number LIKE ?", like, like, like)
+	}
+	q.Count(&count)
 	return count
 }
 
 // FindAllCandidates returns all candidates
-func FindAllCandidates(offset int, pageSize int) []models.Candidate {
+func FindAllCandidates(offset int, pageSize int, search string) []models.Candidate {
 	var candidates []models.Candidate
-	db.DB.Preload("ProfessionalExperience").Preload("PreviousJobs").Preload("Skills").Preload("Languages").Preload("Certifications").Preload("AwardAchievements").
-		Limit(pageSize).Offset(offset).Find(&candidates)
+	q := db.DB.Preload("ProfessionalExperience").Preload("PreviousJobs").Preload("Skills").Preload("Languages").Preload("Certifications").Preload("AwardAchievements")
+	if search != "" {
+		like := "%" + search + "%"
+		q = q.Where("full_name LIKE ? OR email LIKE ? OR mobile_number LIKE ?", like, like, like)
+	}
+	q.Limit(pageSize).Offset(offset).Find(&candidates)
 	return candidates
 }
 
