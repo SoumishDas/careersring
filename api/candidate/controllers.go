@@ -287,16 +287,18 @@ func (controller *CandidateController) ReadLogFile(c *gin.Context) {
 func (controller *CandidateController) FindAllCandidates(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+	search := c.DefaultQuery("search", "")
 	offset := (page - 1) * pageSize
 
-	candidates := FindAllCandidates(offset, pageSize)
+	candidates := FindAllCandidates(offset, pageSize, search)
 	c.JSON(http.StatusOK, candidates)
 }
 
 // GetNumberOfPages returns the number of pages of candidates available
 func (controller *CandidateController) GetNumberOfPages(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
-	numberOfRecords := CountCandidates()
+	search := c.DefaultQuery("search", "")
+	numberOfRecords := CountCandidates(search)
 	numberOfPages := int(math.Ceil(float64(numberOfRecords) / float64(pageSize)))
 	c.JSON(http.StatusOK, gin.H{"numberOfPages": numberOfPages})
 }

@@ -18,6 +18,12 @@ bun dev
 
 The API server reads the `DB_TYPE` environment variable. Use `sqlite3` for local development or `postgres` for production. When using SQLite, the database file defaults to `./test.db` but can be changed via `SQLITE_PATH`.
 
+When connecting to Postgres, the database name is chosen based on the `ENV` variable:
+
+- `Production` or `Deployment` &rarr; `Prod`
+- `Development` &rarr; `Dev`
+- any other value &rarr; `Test`
+
 You can seed a local SQLite database with sample data:
 
 ```bash
@@ -82,3 +88,20 @@ sudo systemctl start careersring.service
 
 The service file will be created at `/etc/systemd/system/careersring.service` and
 uses `DB_TYPE=postgres` so the API connects to your Postgres database.
+
+
+## Camunda Setup
+
+This repository does not bundle Camunda. To use Camunda for workflow
+automation:
+
+1. Download the Camunda distribution from
+   [camunda.com](https://camunda.com/download/).
+2. Extract the archive and run the provided startup script (e.g. `./start.sh` or
+   `./camunda.sh` depending on the distribution).
+3. Once Camunda is running, you can model workflows using the Camunda Modeler
+   and interact with them via the REST API on port `8080`.
+
+Integrating the Go API with Camunda typically involves calling the REST API
+from your handlers. Configure the Camunda base URL via environment variables or
+configuration as needed

@@ -22,9 +22,11 @@ func TestCreateCandidateSQLite(t *testing.T) {
 	cand := models.Candidate{EmailUID: "uid1", FullName: "John Doe"}
 	cand = CreateCandidate(cand)
 
-	if CountCandidates() != 1 {
-		t.Fatalf("expected 1 candidate, got %d", CountCandidates())
-	}
+
+        if CountCandidates("") != 1 {
+                t.Fatalf("expected 1 candidate, got %d", CountCandidates(""))
+        }
+
 
 	got, err := FindCandidateByID(fmt.Sprintf("%d", cand.ID))
 	if err != nil {

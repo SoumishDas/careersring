@@ -31,6 +31,8 @@ func ConnectDB(dbType string) {
 			env := os.Getenv("ENV")
 			if env == "Production" || env == "Deployment" {
 				dbName = "Prod"
+			} else if env == "Development" {
+				dbName = "Dev"
 			}
 			dsn = fmt.Sprintf("user=postgres host=43.205.211.80 dbname=%s sslmode=disable password=chikoo123", dbName)
 		}
