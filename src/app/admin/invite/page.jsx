@@ -1,11 +1,14 @@
 "use client";
+
 import { useState, useEffect } from "react";
+
 import axios from "axios";
 import { Box, Button, Typography } from "@mui/material";
 
 export default function InvitePage() {
   const [sending, setSending] = useState(false);
   const [tokens, setTokens] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,6 +18,7 @@ export default function InvitePage() {
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
+
 
   const handleSend = async () => {
     setSending(true);
@@ -34,6 +38,7 @@ export default function InvitePage() {
         Send Invitations
       </Button>
       <Box sx={{ mt: 2 }}>
+
         {loading ? (
           <Typography>Loading...</Typography>
         ) : (
@@ -43,6 +48,13 @@ export default function InvitePage() {
             </Typography>
           ))
         )}
+
+        {tokens.map((t) => (
+          <Typography key={t.ID}>
+            {t.Token} - {t.Completed ? "Completed" : "Pending"}
+          </Typography>
+        ))}
+
       </Box>
     </Box>
   );
