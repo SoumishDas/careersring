@@ -7,7 +7,7 @@ import (
 
 func main() {
 	db.ConnectDB("sqlite3")
-	models.MigrateDB(&db.DB)
+	models.MigrateDB(db.DB)
 
 	sample := models.MasterCandidate{FullName: "Test User", Email: ptr("test@example.com")}
 	db.DB.Create(&sample)

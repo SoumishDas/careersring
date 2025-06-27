@@ -10,12 +10,16 @@ import (
 	_ "github.com/lib/pq" // Postgres driver
 )
 
-var DB gorm.DB
+var DB *gorm.DB
 
 // Connecting to db
 func ConnectDB(dbType string) {
 	if dbType == "" {
-		dbType = "sqlite3"
+		if os.Getenv("ENV") == "Production" {
+			dbType = "postgres"
+		} else {
+			dbType = "sqlite3"
+		}
 	}
 
 	if dbType == "postgres" {
@@ -27,21 +31,21 @@ func ConnectDB(dbType string) {
 			}
 			dsn = fmt.Sprintf("user=postgres host=43.205.211.80 dbname=%s sslmode=disable password=chikoo123", dbName)
 		}
-		db, err := gorm.Open("postgres", dsn)
+		d, err := gorm.Open("postgres", dsn)
 		if err != nil {
 			log.Fatal("Error Connecting to db")
 		}
-		DB = *db
+		DB = d
 	} else if dbType == "sqlite3" {
 		path := os.Getenv("SQLITE_PATH")
 		if path == "" {
 			path = "./test.db"
 		}
-		db, err := gorm.Open("sqlite3", path)
+		d, err := gorm.Open("sqlite3", path)
 		if err != nil {
 			log.Fatal("Error Connecting to db")
 		}
-		DB = *db
+		DB = d
 	} else {
 		log.Fatal("Invalid db type")
 	}
