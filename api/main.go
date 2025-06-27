@@ -18,14 +18,15 @@ var (
 
 func main() {
 	runtime.GOMAXPROCS(2)
-	if os.Getenv("ENV") == "Production" {
+	env := os.Getenv("ENV")
+	if env == "Production" || env == "Deployment" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
 	dbType := os.Getenv("DB_TYPE")
 	db.ConnectDB(dbType)
 	Router = router.GetRouter()
-	models.MigrateDB(&db.DB)
+	models.MigrateDB(db.DB)
 
 	log.Fatal(Router.Run(":5000"))
 
