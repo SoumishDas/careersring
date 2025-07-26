@@ -1,20 +1,18 @@
 # Deployment
 
-Use the helper scripts in the `scripts/` directory to build and run the project.
+Automation scripts live in the `scripts/` folder.
 
-- `scripts/deploy.sh` – installs dependencies, builds the Next.js app and compiles the Go API into a `careersring-api` binary. Environment variables are set for production usage.
-- `scripts/run.sh` – runs the compiled Go binary and the Next.js server together. Used by the systemd service.
-- `scripts/register_service.sh` – creates `/etc/systemd/system/careersring.service` pointing to `run.sh` so the application can run as a service.
-- `scripts/init_sqlite.go` – seeds a local SQLite database with sample data for development.
+- `deploy.sh` – installs Node and Go dependencies, builds the Next.js frontend, then compiles the Go API to `careersring-api`. Sets `ENV=Deployment` and `DB_TYPE=postgres`.
+- `run.sh` – starts the compiled API and the Next.js server simultaneously. Used by the systemd unit.
+- `register_service.sh` – writes a unit file to `/etc/systemd/system/careersring.service` and enables it so the app can run as a background service.
+- `init_sqlite.go` – optional helper that seeds a SQLite database with test data.
 
-Build for production:
-
+Build the project:
 ```bash
 ./scripts/deploy.sh
 ```
-
-Run locally after building:
-
+After building you can run locally with:
 ```bash
 ./scripts/run.sh
 ```
+Use `register_service.sh` if you want the app to run automatically on system boot.

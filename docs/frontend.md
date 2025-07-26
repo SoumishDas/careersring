@@ -1,13 +1,19 @@
 # Frontend (Next.js)
 
-The `src/` directory houses the Next.js code. Important subfolders:
+The frontend is located in the `src/` directory and uses the Next.js App Router. Key folders include:
 
-- `src/app` – new Next.js app router pages.
-  - `page.js` – landing page.
-  - `layout.js` – global layout and font configuration.
-  - `components/` – shared React components such as the multi-step form.
-  - `forms/` – classic single-page candidate form used in tests.
-  - `admin/` – administrative UI for searching and editing candidates.
-  - `POC/` – proof‑of‑concept route rendering `FounditForm`.
+- `src/app` – entry point for all pages.
+  - `page.js` – landing page showing a basic index.
+  - `layout.js` – global layout, fonts and `globals.css` imports.
+  - `components/` – reusable React components. Notably `MultiStepForm/` implements an 18 step wizard for candidate intake.
+  - `forms/` – a simpler `candidateForm.jsx` used in testing.
+  - `admin/` – admin pages for searching and editing stored candidates.
+  - `POC/` – proof of concept route for the `FounditForm` component.
 
-Testing for the frontend is done with Jest and React Testing Library. Run `npm test` to execute the suite.
+React Hook Form drives all form state and validation. Material UI (`@mui/*`) provides styling.
+
+To start the development server run:
+```bash
+npm run dev
+```
+Hot reloading is enabled by default. Tests live in `__tests__/` and can be executed with `npm test`.
