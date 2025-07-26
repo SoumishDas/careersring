@@ -1,10 +1,11 @@
 # Documentation Index
 
-This directory contains detailed documentation for the CareersRing project. Start by reading `overview.md` and then explore individual topics.
+This directory provides a walkthrough of the entire codebase. Each document drills into specific areas so you can quickly find what you need.
 
-- [Overview](overview.md) – high level summary of the repository and its components
-- [Frontend](frontend.md) – Next.js application structure
-- [Backend](backend.md) – Go API structure and endpoints
-- [Database](database.md) – database configuration and models
-- [Deployment](deployment.md) – scripts and production usage
-- [Testing](testing.md) – how to run and interpret tests
+- [Overview](overview.md) – repository layout and main technologies
+- [Frontend](frontend.md) – Next.js code structure and key components
+- [Backend](backend.md) – Go API organization and endpoint summary
+- [Database](database.md) – ORM models and configuration
+- [Deployment](deployment.md) – scripts and production setup
+- [Testing](testing.md) – running Jest and Go tests
+- [Camunda Integration](camunda.md) – how to add a BPM engine

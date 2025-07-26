@@ -1,7 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 
-For detailed documentation see [docs](docs/README.md).
+For a full walkthrough of every folder see [docs](docs/README.md).
 
 ## Getting Started
 
@@ -38,6 +38,14 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Current Functionality
+
+- **Multi-step candidate form** – collects candidate details through eighteen steps with local persistence.
+- **Legacy candidate form** – a single-page version used in tests.
+- **Admin screens** – basic pages for listing and updating candidate records.
+- **REST API** – Go endpoints handle CRUD for both the old and new candidate schemas.
+- **Database models** – Gorm models stored in SQLite or Postgres.
 
 ## Learn More
 
@@ -95,16 +103,18 @@ uses `DB_TYPE=postgres` so the API connects to your Postgres database.
 
 ## Camunda Setup
 
-This repository does not bundle Camunda. To use Camunda for workflow
-automation:
+Camunda is not bundled with this repository. See [docs/camunda.md](docs/camunda.md) for a detailed guide. Basic steps:
 
-1. Download the Camunda distribution from
-   [camunda.com](https://camunda.com/download/).
-2. Extract the archive and run the provided startup script (e.g. `./start.sh` or
-   `./camunda.sh` depending on the distribution).
-3. Once Camunda is running, you can model workflows using the Camunda Modeler
-   and interact with them via the REST API on port `8080`.
+1. Download the Camunda distribution and start it on port `8080`.
+2. Design workflows with Camunda Modeler and deploy them via the REST API.
+3. Implement a small client package in Go to trigger processes from your handlers.
 
-Integrating the Go API with Camunda typically involves calling the REST API
-from your handlers. Configure the Camunda base URL via environment variables or
-configuration as needed
+Set `CAMUNDA_URL` to the Camunda REST endpoint when running the API.
+
+## Suggested Improvements
+
+- Add unit tests for all Go packages.
+- Break large controllers into smaller files for readability.
+- Introduce a configuration file instead of many environment variables.
+- Consider containerizing the application with Docker for easier deployment.
+
